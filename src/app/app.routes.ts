@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { EditorComponent } from './editor/editor.component';
+import { PreviewComponent } from './preview/preview.component';
 
 export const routes: Routes = [
   {
@@ -12,6 +13,12 @@ export const routes: Routes = [
     title: 'Editor',
     path: 'article/editor',
     component: EditorComponent,
+    pathMatch: 'prefix',
+  },
+  {
+    title: 'Preview',
+    path: 'article/preview',
+    component: PreviewComponent,
     pathMatch: 'prefix',
   }
 ];

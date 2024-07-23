@@ -1,2 +1,40 @@
-<p>editor works!</p>
-<quill-editor [placeholder]="''"></quill-editor>
+<h1>Editor</h1>
+
+<div style="background-color:aquamarine; width: 100%;">
+  <quill-editor #editor
+    class="content-editor" 
+    [modules]="titleQuillConfig" 
+    [placeholder]="'Article\'s Title'" 
+    [(ngModel)]="article.title" 
+    (onContentChanged)="onTextChange($event)"
+    (onSelectionChanged)="onSelectChange($event)"
+  >
+  </quill-editor>
+</div>
+
+<div class="inlineTooltip" id="plus-wrapper">
+  <button>+</button>
+  <div class="inlineTooltip-menu">
+    <button (click)="uploadMedia(editor)">Add Image</button>
+    <button>Add Video</button>
+    <button>Add Link</button>
+  </div>
+</div>
+
+<div>
+  <button type="button" (click)="publish()">Publish</button>
+</div>
+
+
+<!-- <div class="view-edit">
+  <div class="left">
+      <ul class="menu">
+          <li class="active">day la title 1</li>
+      </ul>
+  </div>
+  <div class="right">
+    <quill-editor class="content-editor" [modules]="titleQuillConfig" [placeholder]="'Article\'s Title'" [(ngModel)]="article.title"></quill-editor>
+      <quill-editor>
+      </quill-editor>
+  </div>
+</div> -->
