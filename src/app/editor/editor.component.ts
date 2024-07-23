@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { ContentChange, QuillEditorComponent, QuillModule, SelectionChange } from 'ngx-quill';
-import { ContentQuillConfiguration, TitleQuillConfiguration, MediaOnlyConfiguration } from '../utils';
+import { AfterViewInit, Component } from '@angular/core';
+import { ContentChange, QuillEditorComponent, QuillModule, QuillModules, SelectionChange } from 'ngx-quill';
 import { ArticleModel } from '../models';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from '../services/article-service.service';
@@ -17,10 +16,15 @@ import { NgIf } from '@angular/common';
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css'
 })
-export class EditorComponent {
-  titleQuillConfig = TitleQuillConfiguration;
-  contentQuillConfig = ContentQuillConfiguration;
-  mediaOnlyQuillConfig = MediaOnlyConfiguration;
+export class EditorComponent implements AfterViewInit {
+  editorQuillConfig: QuillModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ size: ['small', 'large', 'huge'] }],
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      [{ color: [] }, { background: [] }],
+    ]
+  };
 
   article: ArticleModel = {
     title: '',
@@ -28,6 +32,17 @@ export class EditorComponent {
   };
 
   constructor(private articleService: ArticleService) {}
+  
+  ngAfterViewInit(): void {
+    let btn = document.getElementById('plus-wrapper');
+    btn!.onclick = () => {
+      if (btn!.classList.contains('is-scaled')) {
+        btn!.classList.remove('is-scaled');
+      } else {
+        btn!.classList.add('is-scaled');
+      }
+    }
+  }
 
   onTextChange(ev: ContentChange): void {
     // console.log('content change:', ev);
@@ -63,15 +78,6 @@ export class EditorComponent {
     } else {
       btn!.classList.remove('is-active');
     }
-
-    btn!.onclick = () => {
-      if (btn!.classList.contains('is-scaled')) {
-        btn!.classList.remove('is-scaled');
-      } else {
-        btn!.classList.add('is-scaled');
-      }
-    }
-
     btn!.style.top = bound.top + 'px';
   }
 
@@ -82,10 +88,11 @@ export class EditorComponent {
     // let length = ev.editor.getLength();
     let lines = ev.editor.getLines(range.index, 1);
     let currentFocusText = lines[0].domNode.innerText.trim();
-    console.log('current lines:', currentFocusText);
+    let currentFocusHtml = lines[0].domNode.innerHTML.trim();
+    console.log('current lines:', currentFocusText, currentFocusHtml);
 
     let btn = document.getElementById('plus-wrapper');
-    if (currentFocusText.length <= 0) {
+    if (currentFocusText.length <= 0 && currentFocusHtml === '<br>') {
       btn!.classList.add('is-active');
     } else {
       btn!.classList.remove('is-active');

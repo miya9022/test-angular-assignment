@@ -3,7 +3,7 @@
 <div style="background-color:aquamarine; width: 100%;">
   <quill-editor #editor
     class="content-editor" 
-    [modules]="titleQuillConfig" 
+    [modules]="editorQuillConfig" 
     [placeholder]="'Article\'s Title'" 
     [(ngModel)]="article.title" 
     (onContentChanged)="onTextChange($event)"
