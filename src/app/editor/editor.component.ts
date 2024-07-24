@@ -4,6 +4,8 @@ import { ArticleModel } from '../models';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from '../services/article-service.service';
 import { NgIf } from '@angular/common';
+import Quill from 'quill';
+import { ImageBlot } from '../custom-quill';
 
 @Component({
   selector: 'app-editor',
@@ -18,13 +20,19 @@ import { NgIf } from '@angular/common';
 })
 export class EditorComponent implements AfterViewInit {
   editorQuillConfig: QuillModules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ size: ['small', 'large', 'huge'] }],
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      [{ color: [] }, { background: [] }],
-    ]
+    toolbar: {
+      container: [
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ size: ['small', 'large', 'huge'] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [{ color: [] }, { background: [] }],
+      ],
+      handlers: {
+        // size: this.sizeHandler.bind(this),
+      },
+    }
   };
+  // editor: QuillEditorComponent;
 
   article: ArticleModel = {
     title: '',
@@ -45,7 +53,7 @@ export class EditorComponent implements AfterViewInit {
   }
 
   onTextChange(ev: ContentChange): void {
-    // console.log('content change:', ev);
+    console.log('content change:', ev);
     let lines = ev.editor.getLines();
 
     if (lines.length === 1) {
@@ -103,6 +111,22 @@ export class EditorComponent implements AfterViewInit {
   }
 
   publish(): void {
+    document.querySelectorAll('.image-container input').forEach((input: any) => {
+      input.addEventListener('input', function() {
+        let imageBlot = input.closest('.image-container');
+        if (imageBlot) {
+          // let blot = Quill.find(imageBlot) as ImageBlot;
+          let captionEle = document.createElement('p');
+          captionEle.classList.add('img-caption');
+          captionEle.innerText = input.value;
+          imageBlot.appendChild(captionEle);
+          console.log('dwdawd', imageBlot);
+          // console.log('image blot', blot);
+          // console.log('image blot caption value:', input.value, blot!.value());
+        }
+      });
+    });
+
     this.articleService.addNewArticle(this.article);
   }
 
@@ -129,9 +153,25 @@ export class EditorComponent implements AfterViewInit {
         reader.readAsDataURL(file);
         reader.onload = () => {
           console.log(reader.result);
-          quillEditor.insertEmbed(range!.index, 'image', reader.result, 'user');
+          quillEditor.insertEmbed(range!.index, 'imageBlot', reader.result, 'user');
         };
       }
     };
   }
+
+  // sizeHandler(value: string) {
+  //   const range = this.editor.getSelection();
+  //   if (range) {
+  //     const [leaf] = this.editor.getLeaf(range.index);
+  //     if (leaf && leaf.domNode && leaf.domNode.tagName.toLowerCase() === 'img') {
+  //       if (value === 'small') {
+  //         leaf.domNode.setAttribute('style', 'width: 200px');
+  //       } else if (value === 'large') {
+  //         leaf.domNode.setAttribute('style', 'width: 400px');
+  //       } else if (value === 'huge') {
+  //         leaf.domNode.setAttribute('style', 'width: 100%');
+  //       }
+  //     }
+  //   }
+  // }
 }

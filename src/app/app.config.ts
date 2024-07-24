@@ -4,9 +4,10 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideQuillConfig } from 'ngx-quill/config';
 import { provideHttpClient } from '@angular/common/http';
+import Quill from 'quill';
 import Scroll from 'quill/blots/scroll';
 import Emitter from 'quill/core/emitter';
-import Quill from 'quill';
+import { ImageBlot } from './custom-quill';
 
 class DraggableScroll extends Scroll {
   constructor(registry: any, domNode: HTMLDivElement, { emitter }: {
@@ -25,6 +26,12 @@ class DraggableScroll extends Scroll {
 };
 
 Quill.register(DraggableScroll);
+
+ImageBlot.blotName = 'imageBlot';
+ImageBlot.tagName = 'div';
+ImageBlot.className = 'image-container';
+
+Quill.register(ImageBlot);
 
 export const appConfig: ApplicationConfig = {
   providers: [
