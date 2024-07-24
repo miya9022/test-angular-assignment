@@ -6,6 +6,7 @@ export class ImageBlot extends BlockEmbed {
       // console.log('add image:', value);
       let image = document.createElement('img');
       image.setAttribute('src', value);
+      image.style.width = '400px';
       node.appendChild(image);
   
       let input = document.createElement('input');

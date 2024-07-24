@@ -168,16 +168,28 @@ export class EditorComponent implements AfterViewInit {
   }
 
   imageSizeHandler(value: string) {
+    console.log('abd', value);
     const range = this.editor.getSelection();
     if (range) {
       const [leaf] = this.editor.getLeaf(range.index);
-      if (leaf && leaf.domNode && leaf.domNode.tagName.toLowerCase() === 'img') {
-        if (value === 'small') {
-          leaf.domNode.setAttribute('style', 'width: 200px');
-        } else if (value === 'large') {
-          leaf.domNode.setAttribute('style', 'width: 400px');
-        } else if (value === 'huge') {
-          leaf.domNode.setAttribute('style', 'width: 100%');
+      console.log('select node:', leaf.domNode);
+      if (leaf && leaf.domNode && (leaf.domNode.querySelector('img') !== null || leaf.domNode.tagName.toLowerCase() === 'img')) {
+        if (leaf.domNode.querySelector('img')) {
+          if (value === 'small') {
+            leaf.domNode.querySelector('img').setAttribute('style', 'width: 200px');
+          } else if (value === 'large') {
+            leaf.domNode.querySelector('img').setAttribute('style', 'width: 400px');
+          } else if (value === 'huge') {
+            leaf.domNode.querySelector('img').setAttribute('style', 'width: 100%');
+          }
+        } else {
+          if (value === 'small') {
+            leaf.domNode.setAttribute('style', 'width: 200px');
+          } else if (value === 'large') {
+            leaf.domNode.setAttribute('style', 'width: 400px');
+          } else if (value === 'huge') {
+            leaf.domNode.setAttribute('style', 'width: 100%');
+          }
         }
       }
     }
