@@ -43,6 +43,7 @@
   margin-right: 9px;
 }
 
-.image-container .img-caption {
+.ql-editor .image-container .img-caption {
   margin-left: 50px;
+  display: none;
 }

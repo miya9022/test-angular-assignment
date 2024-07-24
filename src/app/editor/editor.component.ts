@@ -28,7 +28,7 @@ export class EditorComponent implements AfterViewInit {
         [{ color: [] }, { background: [] }],
       ],
       handlers: {
-        // size: this.sizeHandler.bind(this),
+        size: this.imageSizeHandler.bind(this),
       },
     }
   };
@@ -38,6 +38,7 @@ export class EditorComponent implements AfterViewInit {
     title: '',
     contents: [],
   };
+  editor: any;
 
   constructor(private articleService: ArticleService) {}
   
@@ -87,6 +88,25 @@ export class EditorComponent implements AfterViewInit {
       btn!.classList.remove('is-active');
     }
     btn!.style.top = bound.top + 'px';
+
+    document.querySelectorAll('.image-container input').forEach((input: any) => {
+      input.addEventListener('keydown', function(event: any) {
+        if(event.key === 'Enter') {
+          const imageBlot = input.closest('.image-container');
+          if (imageBlot) {
+            const caption = imageBlot.querySelector('small');
+            if(caption) {
+              caption.innerText = input.value;
+            } else {
+              const captionNew = document.createElement('small');
+              captionNew.classList.add('img-caption')
+              captionNew.innerText = input.value;
+              imageBlot.appendChild(captionNew);
+            }
+          }
+        }
+      });
+    });
   }
 
   onSelectChange(ev: SelectionChange): void {
@@ -110,23 +130,11 @@ export class EditorComponent implements AfterViewInit {
     btn!.style.top = bound.top + 'px';
   }
 
-  publish(): void {
-    document.querySelectorAll('.image-container input').forEach((input: any) => {
-      input.addEventListener('input', function() {
-        let imageBlot = input.closest('.image-container');
-        if (imageBlot) {
-          // let blot = Quill.find(imageBlot) as ImageBlot;
-          let captionEle = document.createElement('p');
-          captionEle.classList.add('img-caption');
-          captionEle.innerText = input.value;
-          imageBlot.appendChild(captionEle);
-          console.log('dwdawd', imageBlot);
-          // console.log('image blot', blot);
-          // console.log('image blot caption value:', input.value, blot!.value());
-        }
-      });
-    });
+  onEditorCreated(editor: any) {
+    this.editor = editor;
+  }
 
+  publish(): void {
     this.articleService.addNewArticle(this.article);
   }
 
@@ -159,19 +167,19 @@ export class EditorComponent implements AfterViewInit {
     };
   }
 
-  // sizeHandler(value: string) {
-  //   const range = this.editor.getSelection();
-  //   if (range) {
-  //     const [leaf] = this.editor.getLeaf(range.index);
-  //     if (leaf && leaf.domNode && leaf.domNode.tagName.toLowerCase() === 'img') {
-  //       if (value === 'small') {
-  //         leaf.domNode.setAttribute('style', 'width: 200px');
-  //       } else if (value === 'large') {
-  //         leaf.domNode.setAttribute('style', 'width: 400px');
-  //       } else if (value === 'huge') {
-  //         leaf.domNode.setAttribute('style', 'width: 100%');
-  //       }
-  //     }
-  //   }
-  // }
+  imageSizeHandler(value: string) {
+    const range = this.editor.getSelection();
+    if (range) {
+      const [leaf] = this.editor.getLeaf(range.index);
+      if (leaf && leaf.domNode && leaf.domNode.tagName.toLowerCase() === 'img') {
+        if (value === 'small') {
+          leaf.domNode.setAttribute('style', 'width: 200px');
+        } else if (value === 'large') {
+          leaf.domNode.setAttribute('style', 'width: 400px');
+        } else if (value === 'huge') {
+          leaf.domNode.setAttribute('style', 'width: 100%');
+        }
+      }
+    }
+  }
 }

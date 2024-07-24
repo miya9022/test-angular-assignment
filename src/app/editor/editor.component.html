@@ -8,6 +8,7 @@
     [(ngModel)]="article.title" 
     (onContentChanged)="onTextChange($event)"
     (onSelectionChanged)="onSelectChange($event)"
+    (onEditorCreated)="onEditorCreated($event)"
   >
   </quill-editor>
 </div>
